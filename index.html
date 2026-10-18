@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اكتشف أكثر شخص تحبه 😂</title>
+<!-- تصحيح وسم استدعاء المكتبة هنا -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+body{
+    margin:0;
+    font-family:Tahoma,sans-serif;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    color:white;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+.container{
+    width:90%;
+    max-width:700px;
+    background:#1e293b;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 0 20px rgba(0,0,0,.4);
+    position:relative;
+}
+button{
+    padding:12px 25px;
+    font-size:18px;
+    margin:8px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    background:#3b82f6;
+    color:white;
+}
+button:hover{
+    opacity:.9;
+}
+#message{
+    min-height:60px;
+    margin-top:20px;
+    color:#facc15;
+}
+.shake{
+ animation:shake .4s;
+}
+@keyframes shake{
+0%{transform:translateX(0);}
+25%{transform:translateX(-10px);}
+50%{transform:translateX(10px);}
+75%{transform:translateX(-10px);}
+100%{transform:translateX(0);}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🔍 اكتشف أكثر شخص تحبه بالعائلة</h1>
+<h2 id="question"></h2>
+<div id="answers"></div>
+<div id="message"></div>
+</div>
+<script>
+let current = 0;
+let q6Fails = 0;
+const questions = [
+{
+q:"هل الشخص يلي بتحبو غليظ؟ 😎",
+answers:["نعم","لا"]
+},
+{
+q:"هل الشخص مواليدو بالتسعينات شي؟",
+answers:["نعم","لا"]
+},
+{
+q:"هل الشخص ذكر ولا أنثى؟",
+answers:["ذكر","أنثى"]
+},
+{
+q:"هل الشخص أكبر منك؟",
+answers:["نعم","لا"]
+},
+{
+q:"هل الشخص أول حرف من اسمو M ؟",
+answers:["نعم","أكيد","أكيد أكيد","طبعاً"]
+},
+{
+q:"هل بتحب الشخص أكتر من نفسك؟ ❤️",
+answers:["نعم","لا"]
+}
+];
+function renderQuestion(){
+if(current >= questions.length){
+showResult();
+return;
+}
+document.getElementById("message").innerHTML = "";
+document.getElementById("question").innerText =
+questions[current].q;
+const answersDiv =
+document.getElementById("answers");
+answersDiv.innerHTML = "";
+questions[current].answers.forEach(text=>{
+const btn = document.createElement("button");
+btn.innerText = text;
+if(current === 0 && text === "لا"){
+btn.addEventListener("mouseover",()=>{
+btn.style.position="absolute";
+btn.style.top=
+Math.random()*70+"%";
+btn.style.left=
+Math.random()*70+"%";
+});
+}
+btn.onclick = ()=>selectAnswer(text);
+answersDiv.appendChild(btn);
+});
+}
+function selectAnswer(answer){
+const msg =
+document.getElementById("message");
+if(current === 0){
+if(answer === "لا"){
+msg.innerHTML =
+"😂 شكلك فهمت كلمة غليظ غلط. جرب مرة تانية.";
+return;
+}
+nextQuestion();
+return;
+}
+if(current === 1){
+if(answer === "لا"){
+document.querySelector(".container")
+.classList.add("shake");
+setTimeout(()=>{
+document.querySelector(".container")
+.classList.remove("shake");
+},400);
+msg.innerHTML =
+"📜 تمت مراجعة سجلات التسعينات... جواب مرفوض.";
+return;
+}
+nextQuestion();
+return;
+}
+if(current === 2){
+if(answer === "أنثى"){
+msg.innerHTML =
+"🧬 فحص الحمض النووي يقول: ذكر 100٪";
+return;
+}
+nextQuestion();
+return;
+}
+if(current === 3){
+msg.innerHTML =
+"😂 هذا السؤال موجود ليبين أن اللعبة احترافية فقط.";
+setTimeout(()=>{
+current++;
+renderQuestion();
+},2000);
+return;
+}
+if(current === 4){
+msg.innerHTML =
+"🌍 التدقيق الدولي يتطلب تأكيداً إضافياً.";
+document.getElementById("answers").innerHTML = `
+<button onclick="finishM()">أكيد جداً</button>
+<button onclick="finishM()">أكيد للغاية</button>
+<button onclick="finishM()">محمد غالباً 😏</button>
+<button onclick="finishM()">واضحة يعني 😂</button>
+`;
+return;
+}
+if(current === 5){
+if(answer === "نعم"){
+nextQuestion();
+return;
+}
+q6Fails++;
+if(q6Fails === 1){
+msg.innerHTML =
+"😔 السيرفر زعل من إجابتك.";
+return;
+}
+if(q6Fails === 2){
+msg.innerHTML =
+"😭 السيرفر صار يبكي.";
+return;
+}
+msg.innerHTML =
+"😂 تم اختيار نعم نيابة عنك.";
+setTimeout(()=>{
+current++;
+renderQuestion();
+},2000);
+}
+}
+function finishM(){
+document.getElementById("message")
+.innerHTML =
+"✅ تم الحصول على التأكيد المطلوب.";
+setTimeout(()=>{
+current++;
+renderQuestion();
+},1500);
+}
+function nextQuestion(){
+const fake = [
+"🧠 تحليل العقل الباطن...",
+"🚀 التواصل مع ناسا...",
+"👵 سؤال الجدة...",
+"🤖 فحص المشاعر...",
+"🔍 البحث في الأرشيف..."
+];
+document.getElementById("message")
+.innerHTML =
+fake[Math.floor(Math.random()*fake.length)];
+setTimeout(()=>{
+current++;
+renderQuestion();
+},1000);
+}
+function showResult(){
+confetti({
+particleCount:250,
+spread:180
+});
+document.querySelector(".container")
+.innerHTML = `
+<h1>🏆 النتيجة النهائية</h1>
+<p>✅ استشارة الجدة</p>
+<p>✅ مراجعة ناسا</p>
+<p>✅ موافقة الجيران</p>
+<h3>🥉 المركز الثالث</h3>
+<h2>أبو عبادة</h2>
+<h3>🥈 المركز الثاني</h3>
+<h2>محمد دياب</h2>
+<h3>🥇 المركز الأول</h3>
+<h1 style="font-size:60px;color:#22c55e;">
+محمد دياب
+</h1>
+<p>
+🤯 تم اكتشاف أن محمد دياب احتل
+المركزين الأول والثاني بنفس الوقت.
+</p>
+<p>
+نسبة الثقة:
+99.999999999%
+</p>
+<button onclick="restartGame()">
+إعادة الاختبار
+</button>
+`;
+}
+function restartGame(){
+alert("😎 وفر وقتك...");
+alert("النتيجة مثبتة علمياً.");
+alert("محمد دياب دائماً 😂");
+}
+renderQuestion();
+</script>
+</body>
+</html>
